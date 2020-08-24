@@ -32,14 +32,18 @@
           "platforms": [
             "darwin"
           ]
-        },
+        }
+      ],
+      "publishers": [
         {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "imouto1994",
+              "name": "yotsuba"
+            },
+            "prerelease": true
+          }
         }
       ],
       "plugins": [
@@ -68,11 +72,10 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@electron-forge/cli": "6.0.0-beta.52",
-    "@electron-forge/maker-deb": "6.0.0-beta.52",
-    "@electron-forge/maker-rpm": "6.0.0-beta.52",
     "@electron-forge/maker-squirrel": "6.0.0-beta.52",
     "@electron-forge/maker-zip": "6.0.0-beta.52",
     "@electron-forge/plugin-webpack": "6.0.0-beta.52",
+    "@electron-forge/publisher-github": "^6.0.0-beta.52",
     "@emotion/babel-preset-css-prop": "^10.0.27",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "babel-loader": "^8.1.0",
@@ -86,6 +89,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.35",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^6.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }

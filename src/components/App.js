@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useReducer } from "react";
 import { Global, css } from "@emotion/core";
+import Store from "electron-store";
 
+import Gallery from "./Gallery";
+import Preferences from "./Preferences";
 import TitleBar from "./TitleBar";
 
 const globalStyle = css`
@@ -9,6 +12,7 @@ const globalStyle = css`
     box-sizing: border-box;
     height: 100%;
     line-height: 1.5;
+    color: #576574;
 
     /* Breaks words to prevent overflow in all browsers */
     overflow-wrap: break-word;
@@ -36,13 +40,35 @@ const globalStyle = css`
     box-sizing: inherit;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  figure,
+  p,
+  pre {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
   button {
     padding: 0;
+    margin: 0;
     line-height: inherit;
+    font-size: 14px;
+    font-family: inherit;
     color: inherit;
     cursor: pointer;
     background-color: transparent;
     border: 0;
+  }
+
+  button:hover {
+    color: #fff;
   }
 
   button:focus {
@@ -50,12 +76,54 @@ const globalStyle = css`
   }
 `;
 
+const config = new Store();
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "FOLDERS_APPEND": {
+      const currentFolders = state.folders;
+      const {
+        payload: { folders: appendedFolders },
+      } = action;
+      const newFolders = appendedFolders.filter(
+        (folder) => currentFolders.indexOf(folder) === -1,
+      );
+      const updatedFolders = [...state.folders, ...newFolders];
+      config.set("folders", updatedFolders);
+
+      return {
+        ...state,
+        folders: updatedFolders,
+      };
+    }
+    case "FOLDER_REMOVE": {
+      const {
+        payload: { folder },
+      } = action;
+      const currentFolders = state.folders;
+      const updatedFolders = currentFolders.filter((f) => f !== folder);
+
+      return {
+        ...state,
+        folders: updatedFolders,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
 export default function App() {
+  const [store, dispatch] = useReducer(reducer, {
+    folders: config.get("folders", []),
+  });
+
   return (
     <>
       <Global styles={globalStyle} />
       <TitleBar />
-      <h1>Test</h1>
+      <Gallery folders={store.folders} />
+      <Preferences folders={store.folders} dispatch={dispatch} />
     </>
   );
 }
